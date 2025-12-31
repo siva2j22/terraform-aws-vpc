@@ -14,7 +14,7 @@
 } 
 
 
-#IGW
+#IGW like router in home
 resource "aws_internet_gateway" "main" {
   vpc_id = aws_vpc.main.id
 
@@ -29,15 +29,14 @@ resource "aws_internet_gateway" "main" {
 
 # public subnetssubnets
 resource "aws_subnet" "public" {
-    count = length(var.public_subnets_cidrs)
+  count = length(var.public_subnet_cidrs)
   vpc_id     = aws_vpc.main.id
-  cidr_block = var.public_subnets_cidrs[count.index]
-  #availability_zone = local.az_names[count.index]
+  cidr_block = var.public_subnet_cidrs[count.index]
   availability_zone = local.az_names[count.index]
   map_public_ip_on_launch = true
 
   tags = merge(
-    var.public_subnets_tags,
+    var.public_subnet_tags,
     local.common_tags,
     {
         Name = "${local.common_name_suffix}-public-${local.az_names[count.index]}"  
@@ -48,15 +47,15 @@ resource "aws_subnet" "public" {
 
 # private subnets
 resource "aws_subnet" "private" {
-    count = length(var.private_subnets_cidrs)
+    count = length(var.private_subnet_cidrs)
   vpc_id     = aws_vpc.main.id
-  cidr_block = var.private_subnets_cidrs[count.index]
-  #availability_zone = local.az_names[count.index]
+  cidr_block = var.private_subnet_cidrs[count.index]
+  
   availability_zone = local.az_names[count.index]
  
 
   tags = merge(
-    var.private_subnets_tags,
+    var.private_subnet_tags,
     local.common_tags,
     {
         Name = "${local.common_name_suffix}-private-${local.az_names[count.index]}"  
@@ -66,14 +65,14 @@ resource "aws_subnet" "private" {
 }
 # database subnets
 resource "aws_subnet" "database" {
-    count = length(var.database_subnets_cidrs)
+    count = length(var.database_subnet_cidrs)
   vpc_id     = aws_vpc.main.id
-  cidr_block = var.database_subnets_cidrs[count.index]
+  cidr_block = var.database_subnet_cidrs[count.index]
   #availability_zone = local.az_names[count.index]
   availability_zone = local.az_names[count.index]
   
   tags = merge(
-    var.database_subnets_tags,
+    var.database_subnet_tags,
     local.common_tags,
     {
         Name = "${local.common_name_suffix}-database-${local.az_names[count.index]}"  
@@ -181,19 +180,19 @@ resource "aws_route" "database" {
 
 
 resource "aws_route_table_association" "public" {
-  count = length(var.public_subnets_cidrs)
+  count = length(var.public_subnet_cidrs)
   subnet_id      = aws_subnet.public[count.index].id
   route_table_id = aws_route_table.public.id
 }
 
 resource "aws_route_table_association" "private" {
-  count = length(var.private_subnets_cidrs)
+  count = length(var.private_subnet_cidrs)
   subnet_id      = aws_subnet.private[count.index].id
   route_table_id = aws_route_table.private.id
 }
 
 resource "aws_route_table_association" "database" {
-  count = length(var.database_subnets_cidrs)
+  count = length(var.database_subnet_cidrs)
   subnet_id      = aws_subnet.database[count.index].id
   route_table_id = aws_route_table.database.id
 }

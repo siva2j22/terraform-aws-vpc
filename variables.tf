@@ -21,29 +21,29 @@ variable "igw_tags" {
     default = {}
 }
 
-variable "public_subnets_cidrs" {
+variable "public_subnet_cidrs" {
     type = list
 }
 
-variable "public_subnets_tags" {
+variable "public_subnet_tags" {
     type = map
     default = {}
 }
 
-variable "private_subnets_cidrs" {
+variable "private_subnet_cidrs" {
     type = list
 }
 
-variable "private_subnets_tags" {
+variable "private_subnet_tags" {
     type = map
     default = {}
 }
 
-variable "database_subnets_cidrs" {
+variable "database_subnet_cidrs" {
     type = list
 }
 
-variable "database_subnets_tags" {
+variable "database_subnet_tags" {
     type = map
     default = {}
 }
